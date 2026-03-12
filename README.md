@@ -1,56 +1,44 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/5HZkrI_Y)
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/r8OAyKH-)
-# CNN Classification Task with Cat-vs-Dog dataset
-
-## Task Description
-In this task, you will build a Convolutional Neural Network (CNN) for image classification. The goal is to classify images into two categories: **dogs** and **cats**. You will:
-
-1. Preprocess and explore the dataset.
-2. Build and train a CNN classification model.
-3. Evaluate the model's performance using appropriate metrics.
-4. Record your findings and observations under the **Findings** section.
-
+# CNN Classification — Cat vs. Dog
 
 ## Dataset
-The dataset used for this task is **Dogs vs. Cats**:
+**Cats vs Dogs** — [Kaggle](https://www.kaggle.com/datasets/shaunthesheep/microsoft-catsvsdogs-dataset)  
+~25,000 JPEG images 
 
-[Kaggle Dataset - Dog vs. Cat](https://www.kaggle.com/datasets/shaunthesheep/microsoft-catsvsdogs-dataset/data)
+## Preprocessing
+- Resized all images to `128×128`
+- Normalized pixel 
+- Split: **70% Train / 15% Val / 15% Test**
 
-### Dataset Details:
-- **Content**: Images of dogs and cats.
-- **Format**: JPEG images.
-- **Labels**: 0 for cat, 1 for dog.
+## Models
 
+### Model 1 — 3 Conv Layers
+| Layer | Details |
+|---|---|
+| Conv2D × 3 | 32 → 64 → 128 filters, ReLU |
+| MaxPooling2D × 3 | 2×2 |
+| Dense | 256 neurons, ReLU |
+| Dropout | 0.5 |
+| Output | 1 neuron, Sigmoid |
 
-## Requirements
+### Model 2 — 4 Conv Layers
+Same as Model 1 + extra `Conv2D(256) + MaxPooling2D` block.
 
-1. **Model Requirements**:
-   - Build a CNN model.
-   - Include at least:
-     - Input layer for image data.
-     - Multiple convolutional layers with appropriate activation functions.
-     - Pooling layers (e.g., MaxPooling).
-     - Fully connected layers leading to a softmax or sigmoid output.
-   - Use **binary cross-entropy** as the loss function for binary classification.
+**Compile:** Adam | Binary Crossentropy | Accuracy  
+**Training:** 10 epochs, Batch size 64, EarlyStopping (patience=5)
 
-2. **Evaluation**:
-   - Use metrics such as **accuracy**, **precision**, **recall**, and **F1-score**.
-   - Create visualizations for:
-     - Model training and validation loss.
-     - Model training and validation accuracy.
-     - Confusion matrix.
+## Results
 
-3. **Documentation**:
-   - Clearly document:
-     - The architecture of the CNN model.
-     - Evaluation results.
+| Metric | Model 1 | Model 2 |
+|---|---|---|
+| Accuracy | 0.8368 | **0.8814** |
+| Precision | 0.8264 | **0.8944** |
+| Recall | 0.8553 | **0.8665** |
+| F1-Score | 0.8406 | **0.8802** |
 
 ## Findings
-Document your results and observations here:
-- **Accuracy**: [Enter final accuracy here]
-- **Loss**: [Enter final loss here]
-- **Observations**:
-   - [E.g., CNN with 3 layers achieved better accuracy compared to 2 layers]
-   - [Learning rate of 0.001 provided optimal convergence]
-
-Add more details as needed to describe your experiments and outcomes.
+- **Model 2 outperforms Model 1** across all metrics, with ~4.5% accuracy gain from adding a 4th Conv layer.
+- Both models show **overfitting** in later epochs  Train Accuracy kept rising while Val Accuracy stopped improving.
+- Model 1 correctly classified all 7 real-world test images, while Model 2 misclassified 2 out of 7, suggesting Model 1 generalizes better despite lower test set accuracy.
+- Adam's default learning rate (0.001) provided stable convergence for both models.
